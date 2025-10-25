@@ -3,143 +3,223 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conversion Descente Canyon vers GPX</title>
+  <title>Convertisseur Canyon → GPX</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 50px auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    h1 {
-      color: #2c5aa0;
-      text-align: center;
-    }
-    form {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin: 15px 0 5px;
-      font-weight: bold;
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+    * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
-    button {
-      background-color: #2c5aa0;
-      color: white;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 20px;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 600px;
       width: 100%;
     }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
     button:hover {
-      background-color: #1e3d6e;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
     }
-    .alert {
-      background-color: #fff3cd;
-      border: 1px solid #ffc107;
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .example {
+      background: #f5f5f5;
       padding: 15px;
-      border-radius: 4px;
-      margin: 20px 0;
-    }
-    .examples img {
-      max-width: 100%;
-      height: auto;
-      margin: 10px 0;
-      border-radius: 4px;
-    }
-    .help {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-top: 20px;
+      font-size: 13px;
+      color: #666;
     }
-    .divider {
-      text-align: center;
-      margin: 15px 0;
-      font-weight: bold;
+
+    .example strong {
+      color: #333;
     }
-    a {
-      color: #2c5aa0;
-      text-decoration: none;
+
+    .example code {
+      background: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #667eea;
     }
-    a:hover {
-      text-decoration: underline;
+
+    .status {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .status.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+
+    .status.success {
+      background: #efe;
+      color: #3c3;
+      border: 1px solid #cfc;
     }
   </style>
 </head>
 <body>
-  <h1>Convertisseur Descente Canyon</h1>
+  <div class="container">
+    <h1>🏔️ Canyon → GPX</h1>
+    <p class="subtitle">Convertissez un topo Descente-Canyon en fichier GPX</p>
 
-  <form id="gpxForm">
-    <label for="url">URL du topo :</label>
-    <input type="text" id="url" name="url" placeholder="https://www.descente-canyon.com/canyoning/canyon/2136/Angon.html">
+    <form id="gpxForm">
+      <div class="input-group">
+        <label for="url">URL du canyon :</label>
+        <input 
+          type="url" 
+          id="url" 
+          name="url" 
+          placeholder="https://www.descente-canyon.com/canyoning/canyon/2136/Angon.html"
+          required
+        >
+      </div>
 
-    <div class="divider">OU</div>
+      <button type="submit" id="submitBtn">
+        📥 Générer le GPX
+      </button>
 
-    <label for="id">Identifiant du canyon :</label>
-    <input type="number" id="id" name="id" placeholder="2136">
+      <div id="status" class="status"></div>
+    </form>
 
-    <button type="submit">Générer GPX</button>
-  </form>
-
-  <p style="text-align: center; margin-top: 20px;">
-    <a href="https://www.descente-canyon.com" target="_blank">Aller à la Base de canyons</a>
-  </p>
-
-  <div class="alert">
-    <strong>Attention :</strong> Le fichier GPX est une aide supplémentaire. Soyez vigilant quant à la fiabilité du positionnement des points. Rappelez-vous qu'il n'est pas toujours évident de se géolocaliser dans un canyon et que certains points ont été positionnés manuellement sur un fond de carte.
-  </div>
-
-  <div class="help">
-    <h3>Un peu d'aide ?</h3>
-    <p>Vous pouvez générer un fichier GPX à partir d'un topo soit à partir de l'adresse URL du topo (Page Résumé, Description, Carte...), soit à partir de son identifiant.</p>
-
-    <h4>C'est quoi l'identifiant ?</h4>
-    <p>
-      <code>https://www.descente-canyon.com/canyoning/canyon/<strong>2136</strong>/Angon.html</code><br>
-      Ci-dessus, l'URL du topo d'Angon avec l'identifiant du topo en gras : <strong>2136</strong>
-    </p>
-
-    <h4>Une autre astuce ?</h4>
-    <p>Il est possible également d'obtenir directement le GPX du topo souhaité en construisant l'adresse à partir de son identifiant :</p>
-    <p><code>https://descente-canyon.vercel.app/api/dc_to_gpx?id=<strong>#IDENTIFIANT#</strong></code></p>
-    <p>Exemple : <a href="/api/dc_to_gpx?id=2136" target="_blank">https://descente-canyon.vercel.app/api/dc_to_gpx?id=2136</a></p>
+    <div class="example">
+      <strong>💡 Exemple d'URL :</strong><br>
+      <code>https://www.descente-canyon.com/canyoning/canyon/2136/Angon.html</code>
+    </div>
   </div>
 
   <script>
-    document.getElementById('gpxForm').addEventListener('submit', function(e) {
+    const form = document.getElementById('gpxForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const url = document.getElementById('url').value;
-      const id = document.getElementById('id').value;
       
-      let apiUrl = '/api/dc_to_gpx?';
-      
-      if (url) {
-        apiUrl += 'url=' + encodeURIComponent(url);
-      } else if (id) {
-        apiUrl += 'id=' + id;
-      } else {
-        alert('Veuillez renseigner une URL ou un identifiant');
+      if (!url) {
+        showStatus('Veuillez saisir une URL', 'error');
         return;
       }
-      
-      window.location.href = apiUrl;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Génération en cours...';
+      status.style.display = 'none';
+
+      try {
+        const response = await fetch(`/api/generate-gpx?url=${encodeURIComponent(url)}`);
+        
+        if (response.ok) {
+          const blob = await response.blob();
+          const downloadUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = `canyon-${Date.now()}.gpx`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(downloadUrl);
+          
+          showStatus('✅ GPX téléchargé avec succès !', 'success');
+        } else {
+          const errorText = await response.text();
+          showStatus(`❌ Erreur : ${errorText}`, 'error');
+        }
+      } catch (error) {
+        showStatus(`❌ Erreur réseau : ${error.message}`, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '📥 Générer le GPX';
+      }
     });
+
+    function showStatus(message, type) {
+      status.textContent = message;
+      status.className = `status ${type}`;
+      status.style.display = 'block';
+    }
   </script>
 </body>
 </html>
