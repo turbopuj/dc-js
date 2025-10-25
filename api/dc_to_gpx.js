@@ -7,7 +7,7 @@ function extractInfo(chaine, start, stop) {
   return chaine.substring(s, s + l);
 }
 
-// ✅ Export direct d'une fonction async
+// Export direct d'une fonction async
 module.exports = async (req, res) => {
   try {
     let id = parseInt(req.query.id);
