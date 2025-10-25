@@ -7,6 +7,7 @@ function extractInfo(chaine, start, stop) {
   return chaine.substring(s, s + l);
 }
 
+// ✅ Export direct d'une fonction async
 module.exports = async (req, res) => {
   try {
     let id = parseInt(req.query.id);
@@ -27,7 +28,8 @@ module.exports = async (req, res) => {
     const axiosConfig = {
       httpsAgent: new https.Agent({
         rejectUnauthorized: false
-      })
+      }),
+      timeout: 10000
     };
 
     const [carteResponse, topoResponse] = await Promise.all([
@@ -46,7 +48,7 @@ module.exports = async (req, res) => {
     display += '<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="Descente Canyon Converter">\n';
     display += `  <metadata>\n    <link href="${urlBase}">\n      <text>Lien vers le topo</text>\n    </link>\n  </metadata>\n`;
 
-    const pointRegex = /var point =(.+?);addMarker/g;
+    const pointRegex = /var point =(.+?);addMarker/gs;
     const points = [...carte.matchAll(pointRegex)];
 
     let titreClean = 'Canyon';
@@ -54,7 +56,9 @@ module.exports = async (req, res) => {
       try {
         const titreTopo = extractInfo(topo, '<h1 class="nom">', '</h1>');
         titreClean = titreTopo.replace(/<[^>]*>/g, '');
-      } catch (e) {}
+      } catch (e) {
+        console.error('Erreur extraction titre:', e.message);
+      }
     }
 
     for (const point of points) {
@@ -62,13 +66,13 @@ module.exports = async (req, res) => {
       
       const coordMatch = pointData.match(/LatLng\(([^)]+)\)/);
       const typeMatch = pointData.match(/type\s*:\s*'([^']+)'/);
-      const remarqueMatch = pointData.match(/remarque\s*:\s*'([^']+)'\s*,auteur/);
+      const remarqueMatch = pointData.match(/remarque\s*:\s*'([^']*?)'\s*,\s*auteur/);
 
       if (!coordMatch || !typeMatch) continue;
 
       const [lat, lng] = coordMatch[1].split(',').map(s => s.trim());
       const type = typeMatch[1];
-      const remarque = remarqueMatch ? ` (${remarqueMatch[1]})` : '';
+      const remarque = remarqueMatch && remarqueMatch[1] ? ` (${remarqueMatch[1]})` : '';
 
       display += `  <wpt lat="${lat}" lon="${lng}">\n`;
 
@@ -111,10 +115,10 @@ module.exports = async (req, res) => {
 
     res.setHeader('Content-Type', 'application/gpx+xml');
     res.setHeader('Content-Disposition', `attachment; filename=canyon${id}.gpx`);
-    res.status(200).send(display);
+    return res.status(200).send(display);
 
   } catch (error) {
-    console.error('Erreur:', error);
-    res.status(500).send('Erreur lors de la génération du fichier GPX: ' + error.message);
+    console.error('Erreur génération GPX:', error);
+    return res.status(500).send(`Erreur: ${error.message}`);
   }
 };
