@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversion Descente Canyon vers GPX</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #2c5aa0;
+      text-align: center;
+    }
+    form {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #2c5aa0;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #1e3d6e;
+    }
+    .alert {
+      background-color: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .examples img {
+      max-width: 100%;
+      height: auto;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .help {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .divider {
+      text-align: center;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+    a {
+      color: #2c5aa0;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Convertisseur Descente Canyon</h1>
+
+  <form id="gpxForm">
+    <label for="url">URL du topo :</label>
+    <input type="text" id="url" name="url" placeholder="https://www.descente-canyon.com/canyoning/canyon/2136/Angon.html">
+
+    <div class="divider">OU</div>
+
+    <label for="id">Identifiant du canyon :</label>
+    <input type="number" id="id" name="id" placeholder="2136">
+
+    <button type="submit">Générer GPX</button>
+  </form>
+
+  <p style="text-align: center; margin-top: 20px;">
+    <a href="https://www.descente-canyon.com" target="_blank">Aller à la Base de canyons</a>
+  </p>
+
+  <div class="alert">
+    <strong>Attention :</strong> Le fichier GPX est une aide supplémentaire. Soyez vigilant quant à la fiabilité du positionnement des points. Rappelez-vous qu'il n'est pas toujours évident de se géolocaliser dans un canyon et que certains points ont été positionnés manuellement sur un fond de carte.
+  </div>
+
+  <div class="help">
+    <h3>Un peu d'aide ?</h3>
+    <p>Vous pouvez générer un fichier GPX à partir d'un topo soit à partir de l'adresse URL du topo (Page Résumé, Description, Carte...), soit à partir de son identifiant.</p>
+
+    <h4>C'est quoi l'identifiant ?</h4>
+    <p>
+      <code>https://www.descente-canyon.com/canyoning/canyon/<strong>2136</strong>/Angon.html</code><br>
+      Ci-dessus, l'URL du topo d'Angon avec l'identifiant du topo en gras : <strong>2136</strong>
+    </p>
+
+    <h4>Une autre astuce ?</h4>
+    <p>Il est possible également d'obtenir directement le GPX du topo souhaité en construisant l'adresse à partir de son identifiant :</p>
+    <p><code>https://descente-canyon.vercel.app/api/dc_to_gpx?id=<strong>#IDENTIFIANT#</strong></code></p>
+    <p>Exemple : <a href="/api/dc_to_gpx?id=2136" target="_blank">https://descente-canyon.vercel.app/api/dc_to_gpx?id=2136</a></p>
+  </div>
+
+  <script>
+    document.getElementById('gpxForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const url = document.getElementById('url').value;
+      const id = document.getElementById('id').value;
+      
+      let apiUrl = '/api/dc_to_gpx?';
+      
+      if (url) {
+        apiUrl += 'url=' + encodeURIComponent(url);
+      } else if (id) {
+        apiUrl += 'id=' + id;
+      } else {
+        alert('Veuillez renseigner une URL ou un identifiant');
+        return;
+      }
+      
+      window.location.href = apiUrl;
+    });
+  </script>
+</body>
+</html>
